@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <!--
+        Auf dieser Seite können anonyme Nutzer ihre Koordinaten eingeben und 
+    verschiedene Informationen über ein Formular und Google Maps übermitteln. 
+    Die Eingaben werden vor der Übermittlung geprüft und in der Datenbank 
+    registriert. Während des Registrierungsprozesses können Sie auch Punkte 
+    auswählen, indem Sie auf die Koordinaten in der Karte klicken.
+    -->
+    
+    
+    <h:head>
+        <!-- Seitentitel und Einfügen der CSS-Datei und Bootsrap-Datei-->
+        <title>Anonym Anmeldung</title>
+        <!-- Bootstrap -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+        <!-- ********Sie können hier Ihre eigene API KEY eingeben  ******-->
+        <!-- ********Google Maps API KEY ******-->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2sFHpm9AWY5okDNvt0Jj-bLxreSC_uvA"></script>
+        <!-- Anonim Styles -->
+        <h:outputStylesheet name="css/anonimstyles.css" />
+        
+        
+        <script type="text/javascript">
+            var map, marker;
+            
+            // Start Map
+            function initMap() {
+                var defaultLocation = {lat: 39.9334, lng: 32.8597}; // Default location
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: defaultLocation,
+                    zoom: 2
+                });
+                
+                // Wenn Sie auf die Karte klicken, platzieren Sie die Markierung und aktualisieren ihre Koordinaten
+                map.addListener('click', function (event) {
+                    placeMarker(event.latLng);
+                    // Formdaki koordinat alanlarını güncelle
+                    document.getElementById('coordForm2:kundenx').value = event.latLng.lat().toFixed(4);
+                    document.getElementById('coordForm2:kundeny').value = event.latLng.lng().toFixed(4);
+
+                    updateCoordinatesAjax();
+                });
+            }
+
+            // Marker Update
+            function placeMarker(location) {
+                if (marker) {
+                    marker.setPosition(location);
+                } else {
+                    marker = new google.maps.Marker({
+                        position: location,
+                        map: map
+                    });
+                }
+            }
+            
+            // Koordinatenfunktion für JSF-Bean mit Ajax aktualisieren
+            function updateCoordinatesAjax() {
+                document.getElementById('coordForm2:kundenx').dispatchEvent(new Event('change'));
+                document.getElementById('coordForm2:kundeny').dispatchEvent(new Event('change'));
+            }
+
+            function validateForm(event) {
+                var kundenx = document.getElementById('coordForm2:kundenx').value;
+                var kundeny = document.getElementById('coordForm2:kundeny').value;
+
+                if (!kundenx || !kundeny || kundenx == 0 || kundeny == 0) {
+                    alert('Lütfen Koordinatları Seçiniz!');
+                    event.preventDefault(); 
+                    return false;
+                }
+                return true;
+            }
+
+            //Nachdem ich gespeichert habe, setze ich die Karte und die Werte zurück
+            function setDefaultCoordinates() {
+                // Doğrudan 'kundenx' ve 'kundeny' bileşenlerinin id'sine erişiyoruz
+                document.getElementById('kundenx').value = 0.0;
+                document.getElementById('kundeny').value = 0.0;
+                document.getElementById('reported_note').value = '';
+            }
+
+            // Ajax
+            function handleAjaxEvent(data) {
+                setDefaultCoordinates();
+            }
+            
+            // die Anzahl der Zeichen im Nachrichtenteil wird überprüft
+            function countCharacters(textArea, countFieldId, maxChars) {
+                var currentLength = textArea.value.length;
+                var countField = document.getElementById(countFieldId);
+                countField.textContent = currentLength;
+                if (currentLength > maxChars) {
+                    // Fazla karakterleri kes
+                    textArea.value = textArea.value.substring(0, maxChars);
+                    countField.textContent = maxChars;
+                        alert("Reported Note can only contain up to " + maxChars + " characters.");
+                }
+            }
+        </script>
+        
+        
+    </h:head>
+
+    <h:body onload="initMap()">
+
+        <div class="container">
+            <h2 class="text-center">Anonym Anmeldung</h2>
+
+            <!-- Google Maps -->
+            <div id="map"  style="height: 400px; width: 100%;"></div>
+
+
+            <h:form id="coordForm2" onsubmit="return validateForm(event)">
+                <div class="form-group">
+                    <!-- Kunden X und Y Eingabefelder -->
+                    <!-- Diese Seite funktioniert mit der Bean in KoordinatendatenBean.java -->
+                    <label for="kundenx">Kunden X</label>
+                    <h:inputText id="kundenx" value="#{koordinatendatenbean.kd_entity.kundenx}" class="form-control">
+                        <f:ajax event="change" render="@this" />
+                    </h:inputText>
+
+                    <label for="kundeny">Kunden Y</label>
+                    <h:inputText id="kundeny" value="#{koordinatendatenbean.kd_entity.kundeny}" class="form-control">
+                        <f:ajax event="change" render="@this" />
+                    </h:inputText>
+
+                    <label for="geschatzteGrosse">geschätzte Größe</label>
+                    <h:inputText id="geschatzteGrosse" value="#{koordinatendatenbean.kd_entity.geschatzteGrosse}" class="form-control">
+                        <f:ajax event="change" render="@this" />
+                    </h:inputText>
+                    
+                    <br/>
+                    <label for="kundeny">Nachricht :</label>
+                    <h:inputTextarea id="reported_note" value="#{koordinatendatenbean.kd_entity.reportednote}" 
+                                     class="form-control" rows="4" cols="50"
+                                     onkeyup="countCharacters(this, 'charCount', 250)">
+                        <f:ajax event="change" render="@this" />
+                    </h:inputTextarea>
+                     <!-- Zeichenanzahl -->
+                    <small>Characters: <span id="charCount">0</span>/250</small>
+
+                    <br/>
+                     <!-- Speichern-Button -->
+                    <h:commandButton value="Speichern" action="#{koordinatendatenbean.saveAnonymMeldung}" class="btn btn-success" >
+                        <!-- Ajax-Aufruf zur Aktualisierung der Seite -->
+                        <f:ajax execute="@form" onevent="reloadMap" />
+                    </h:commandButton>
+                </div>
+                
+                
+            </h:form>
+            
+            <h:link outcome="index.xhtml" value="Zurück" class="btn btn-primary"/>
+        </div>
+
+    </h:body>
+</html>

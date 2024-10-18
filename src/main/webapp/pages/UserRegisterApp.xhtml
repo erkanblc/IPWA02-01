@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- Diese Seite ermöglicht die Registrierung eines neuen Benutzers. 
+Der Benutzer muss seine Daten wie Benutzername, Vor- und Nachname, 
+Passwort, Telefonnummer, Kundenkategorie (Benutzer oder Administrator) 
+und E-Mail-Adresse eingeben. Bei fehlerhaften Eingaben erhalten die Nutzer 
+Fehlermeldungen und die Eingaben werden vor der Speicherung in der Datenbank
+überprüft.
+Im Bereich Kundenkategorie :
+3 muss für admin ausgewählt werden
+2 muss für user ausgewählt werden -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+    <h:head>
+        <!-- Seitentitel und Einfügen der CSS-Datei und Bootsrap-Datei-->
+        <title>Benutzer Registrierung</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+        <!-- Custom CSS -->
+        <h:outputStylesheet name="css/UserRegisterApp.css" />
+    </h:head>
+    <h:body>
+        <div class="container mt-5">
+            <div class="card text-center" style="width: 40%; margin: 0 auto;">
+                <div id="formcrt">
+                    <h:graphicImage name="images/users.gif" alt="Users" style="width: 30%;" styleClass="users-image" />
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Register Benutzer</h5>
+                    <h:form>
+                        <!-- Diese Seite funktioniert mit der Bean in UserDatenBean.java -->
+                        <div class="form-group">
+                            <h:outputLabel for="username" value="Benutzername " />
+                            <h:inputText id="username" value="#{userdatenbean.userentity.username}" required="true" class="form-control" />
+                            <h:message for="username" style="color: red;" />
+                            <br/>
+
+                            <h:outputLabel for="adsoyad" value="Vor-Nachname :" />
+                            <h:inputText id="adsoyad" value="#{userdatenbean.userentity.vornachname}" required="true" class="form-control" />
+                            <h:message for="adsoyad" style="color: red;" />
+                            <br/>
+
+                            <h:outputLabel for="password" value="Kennwort :" />
+                            <h:inputSecret id="password" value="#{userdatenbean.userentity.password}" required="true" class="form-control" />
+                            <h:message for="password" style="color: red;" />
+                            <br/>
+
+                             <h:outputLabel value="Telefon : " />
+                             <h:inputText  value="#{userdatenbean.userentity.telefon}" required="true" class="form-control" />
+                            
+                            <br/>
+
+                            <h:outputLabel for="kundenkatagori" value="Kunden Kategori (User: 2 | Admin: 3): " />
+                            <h:inputText id="kundenkatagori" value="#{userdatenbean.userentity.kundenkatagori}" required="true" class="form-control">
+                                <!-- Yalnızca 2 ve 3 değerleri arasındaki tam sayıları kabul et -->
+                                <f:validateLongRange minimum="2" maximum="3" />
+                            </h:inputText>
+                            <h:message for="kundenkatagori" style="color: red;" />
+
+
+                            <h:outputLabel for="email" value="Email: " />
+                            <h:inputText id="email" value="#{userdatenbean.userentity.email}" required="true" class="form-control">
+                                <!-- Email doğrulaması -->
+                                <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                            </h:inputText>
+                            <h:message for="email" style="color: red;" />
+                            <br/>
+                        </div>
+
+                        <!-- Timestamp -->
+                        <h:commandButton value="Registrieren" action="#{userdatenbean.register}" class="btn btn-success btn-block"/>
+
+                        <h:panelGroup rendered="#{not empty SAUUserDatens.userErrorMsg}">
+                            <div class="alert alert-danger">
+                                <h:outputText value="#{SAUUserDatens.userErrorMsg}" />
+                            </div>
+                        </h:panelGroup>
+                    </h:form>
+                </div>
+                <div class="card-footer">
+                    <h:link value="Zurück" outcome="LoginApp.xhtml" styleClass="button-link" />
+                </div>
+            </div>
+        </div>
+
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </h:body>
+</html>

@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+    
+    <!-- 
+        Diese Seite bietet eine JSF-basierte Schnittstelle, die es den 
+    Benutzern ermöglicht, der Datenbank Koordinaten hinzuzufügen. 
+    Die Koordinaten können durch Anklicken der Karte über die Google Maps API 
+    eingegeben werden, und der Benutzer kann die Registrierung auch durch 
+    Eingabe zusätzlicher Informationen über das Formular abschließen. 
+    Die in das Formular eingegebenen Informationen werden überprüft, 
+    und der Registrierungsvorgang wird abgeschlossen.  
+    -->
+    <h:head>
+        <title>User Anmeldung</title>
+        <!-- Bootstrap -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+        <!-- Google Maps API -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2sFHpm9AWY5okDNvt0Jj-bLxreSC_uvA"></script>
+        <!-- Anonim Styles -->
+        <h:outputStylesheet name="css/anonimstyles.css" />
+        <script type="text/javascript">
+            var map, marker;
+
+            // Start Map
+            function initMap() {
+                var defaultLocation = {lat: 39.9334, lng: 32.8597}; // Default location: Ankara
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: defaultLocation,
+                    zoom: 8
+                });
+                
+                map.addListener('click', function (event) {
+                    placeMarker(event.latLng);
+                    // Formdaki koordinat alanlarını güncelle
+                    document.getElementById('coordForm2:kundenx').value = event.latLng.lat().toFixed(4);
+                    document.getElementById('coordForm2:kundeny').value = event.latLng.lng().toFixed(4);
+
+                    updateCoordinatesAjax();
+                });
+            }
+
+            
+            function placeMarker(location) {
+                if (marker) {
+                    marker.setPosition(location);
+                } else {
+                    marker = new google.maps.Marker({
+                        position: location,
+                        map: map
+                    });
+                }
+            }
+            document.getElementById('coordForm2:kundenx').value = 0.0;
+            document.getElementById('coordForm2:kundeny').value = 0.0;
+            
+            function updateCoordinatesAjax() {
+                document.getElementById('coordForm2:kundenx').dispatchEvent(new Event('change'));
+                document.getElementById('coordForm2:kundeny').dispatchEvent(new Event('change'));
+            }
+            
+            function validateForm(event) {
+                var kundenx = document.getElementById('coordForm2:kundenx').value;
+                var kundeny = document.getElementById('coordForm2:kundeny').value;
+                
+                if (!kundenx || !kundeny || kundenx == 0 || kundeny == 0) {
+                    alert('Bitte Geben Sie Koordinaten!');
+                    event.preventDefault();
+                    return false;
+                }
+
+                return true;
+            }
+
+            function setDefaultCoordinates() {
+                
+                document.getElementById('kundenx').value = 0.0;
+                document.getElementById('kundeny').value = 0.0;
+            }
+            
+            function handleAjaxEvent(data) {
+                
+                setDefaultCoordinates();
+
+            }
+
+             function countCharacters(textArea, countFieldId, maxChars) {
+                var currentLength = textArea.value.length;
+                var countField = document.getElementById(countFieldId);
+                
+                countField.textContent = currentLength;
+                if (currentLength > maxChars) {
+                                    
+
+                    textArea.value = textArea.value.substring(0, maxChars);
+                    countField.textContent = maxChars; 
+                        alert("Sie haben maksimum " + maxChars + " Schriftzeichen.");
+                }
+            }
+        </script>
+    </h:head>
+    <h:body onload="initMap()">
+        <div class="container">
+            <h1 class="text-center">#{validUser.username}</h1><br/>
+            <h4 class="text-center">User Anmeldung</h4>
+
+            <!-- Google Maps -->
+            <div id="map"  style="height: 400px; width: 100%;"></div>
+
+
+            <h:form id="coordForm2" onsubmit="return validateForm(event)">
+                <div class="form-group">
+                    <!-- Kordinat X ve Y inputları -->
+                    <label for="kundenx">X Koordinaten</label>
+                    <h:inputText id="kundenx" value="#{koordinatendatenbean.kd_entity.kundenx}" class="form-control">
+                        <f:ajax event="change" render="@this" />
+                    </h:inputText>
+
+                    <label for="kundeny">Y Koordinaten</label>
+                    <h:inputText id="kundeny" value="#{koordinatendatenbean.kd_entity.kundeny}" class="form-control">
+                        <f:ajax event="change" render="@this" />
+                    </h:inputText>
+                    <br />
+                    
+                    <label for="geschatzteGrosse">geschätzte Größe</label>
+                    <h:inputText id="geschatzteGrosse" value="#{koordinatendatenbean.kd_entity.geschatzteGrosse}" class="form-control">
+                        <f:ajax event="change" render="@this" />
+                    </h:inputText>
+
+                    <br/>
+
+                    <label for="kundeny">Nachtricht :</label>
+                    <h:inputTextarea id="reported_note" value="#{koordinatendatenbean.kd_entity.reportednote}" 
+                                     class="form-control" rows="4" cols="50"
+                                     onkeyup="countCharacters(this, 'charCount', 250)">
+                        <f:ajax event="change" render="@this" />
+                    </h:inputTextarea>
+                    <small>Characters: <span id="charCount">0</span>/250</small>
+
+                    <br/>           
+                    <h:commandButton value="Speichern" action="#{koordinatendatenbean.saveUserMeldung}" class="btn btn-success" >
+                        <f:ajax execute="@form" onevent="reloadMap" />
+                    </h:commandButton>
+                </div>
+
+
+            </h:form>
+        </div>
+
+
+        <footer class="footer mt-auto py-3 bg-light">
+            <div class="container text-center">
+                <h:form>
+                    <h:commandButton rendered="#{validUser != null}" action="/pages/LogoutApp?faces-redirect=true" value="Logout" class="btn btn-secondary"/>
+                </h:form>
+            </div>
+        </footer>
+    </h:body>
+</html>

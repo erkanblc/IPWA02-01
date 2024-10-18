@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="jakarta.tags.core">
+    <!-- Diese Seite verbindet die Anzeige der Koordinaten der Bergungsliste 
+    mit Google Maps. Sie enthält die Funktionen, um Markierungen auf der Karte
+    hinzuzufügen, den Status zu überprüfen und detaillierte Informationen 
+    in der Tabelle anzuzeigen. Anonyme Markierungen sind gelb und andere 
+    rot gekennzeichnet. -->
+    <h:head>
+        <!-- Seitentitel und Einfügen der CSS-Datei und Bootsrap-Datei-->
+        <title>Bergung Bevorstehend</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+        <!-- Google Maps API -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2sFHpm9AWY5okDNvt0Jj-bLxreSC_uvA"></script>
+        <!-- Custom CSS -->
+        <h:outputStylesheet name="css/admin/AdminControlBergPerson.css" />
+        <script type="text/javascript">
+            var selectedLatLng;
+            var markers = []; // Marker verilerini burada saklayalım
+            var userData = []; // Json Data
+            var marker = null;
+            var map;
+            var sayac = 0;
+            
+            // Haritayı başlatma fonksiyonu
+            function initMap() {
+                var defaultLocation = {lat: 39.9334, lng: 32.8597}; 
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: defaultLocation,
+                    zoom: 7
+                });
+            }
+            
+            function MarkersAdd() {
+                // Tablodaki tüm isimleri bul
+                var names = document.querySelectorAll(".user-name");
+                var lats = document.querySelectorAll(".user-lat");
+                var lngs = document.querySelectorAll(".user-lng");
+                var durums = document.querySelectorAll(".user-durum2");
+                for (var i = 0; i &lt; names.length; i++) {
+                    var name = names[i].textContent;
+                    var lat = parseFloat(lats[i].textContent); 
+                    var lng = parseFloat(lngs[i].textContent); 
+
+                    var durum = durums[i].checked;
+
+                    if (durum == false) {
+                        sayac++;
+                        var position3 = new google.maps.LatLng(lat, lng); // Koordinatlar
+                        var iconColor;
+                        if (name.trim() === "Anonim") {
+                            iconColor = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"; // orange marker
+                        } else {
+                            iconColor = "http://maps.google.com/mapfiles/ms/icons/red-dot.png"; // rot marker
+                        }
+                        var marker2 = new google.maps.Marker({
+                            position: position3, // Konum
+                            map: map, // Harita (global değişken)
+                            title: "Name: " + name, // Marker başlığı
+                            icon: iconColor
+                        });
+                        markers.push(marker2);
+                    }
+                }
+            }
+        </script>
+    </h:head>
+
+    <h:body onload="initMap()">
+        <div class="container my-4"> 
+
+            <div style="display: flex; align-items: center; justify-content: center;">
+                
+                <div id="radar-image">
+                    <h:graphicImage name="images/bergperson.gif" alt="Kullanıcılar" style="width: 100%; height: auto;" />
+                </div>
+
+                <!-- Title -->
+                <div id="title" style="width: 50%; text-align: center;">
+                    <h2 class="title">BergungsListe</h2>
+                </div>
+            </div>
+            <br/>
+            <!-- Google Map -->
+            <div id="map"  style="height: 400px; width: 100%;"></div>
+            <br/>
+            <div>
+                <h:form>
+                    <!-- Sie erlaubt es uns, die Punkte in unserer Liste auf der Karte anzuzeigen und verwendet die Funktion MarkersAdd() -->
+                    <h:commandButton value="Show Marker" class="btn btn-lg btn-primary" type="button" onclick="MarkersAdd();" />
+                </h:form></div>
+            
+            <div class="table-responsive">
+                <h:form>
+                    <!-- Diese Seite funktioniert mit der Bean in KoordinatendatenBean.java -->
+                    <div class="table-responsive">
+                        <br/>
+
+                        <h:dataTable value="#{koordinatendatenbean.kd_list_filtered}" var="coord" border="1" cellpadding="5" class="table table-bordered table-striped table-hover text-center">
+                            
+                            <!-- ID Sütunu -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="ID" />
+                                </f:facet>
+                                <h:outputText value="#{coord.id}" rendered="#{!coord.situation}" />
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="X Koordinaten" />
+                                </f:facet>
+                                <h:outputText value="#{coord.kundenx}" styleClass="user-lat" rendered="#{!coord.situation}" />
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Y Koordinaten" />
+                                </f:facet>
+                                <h:outputText value="#{coord.kundeny}" styleClass="user-lng" rendered="#{!coord.situation}" />
+                            </h:column>
+
+                            <!-- Durum Sütunu -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Status" />
+                                </f:facet>
+                                <h:selectBooleanCheckbox value="#{coord.situation}" disabled="true" styleClass="user-durum2" rendered="#{!coord.situation}" />
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Bergungsperson" />
+                                </f:facet>
+                                <h:outputText value="#{coord.bergungsperson}" styleClass="user-bergungsperson" rendered="#{!coord.situation}" />
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Anmeldungsdatum" />
+                                </f:facet>
+                                <h:outputText value="#{coord.created_at}" rendered="#{!coord.situation}" />
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Benutzer Name" />
+                                </f:facet>
+                                <h:outputText value="#{coord.username}" styleClass="user-name" rendered="#{!coord.situation}" />
+                            </h:column>
+
+                            <h:column styleClass="option-#{coord.optiondata}">
+                                <f:facet name="header">
+                                    <h:outputText value=" " />
+                                </f:facet>
+                                <h:outputText value="#{coord.optiondata}" rendered="#{!coord.situation}" />
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="geschatzteGrosse" />
+                                </f:facet>
+                                <h:outputText value="#{coord.geschatzteGrosse}" styleClass="reported-note" rendered="#{!coord.situation}" />
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Anmerkung" />
+                                </f:facet>
+                                <h:outputText value="#{coord.reportednote}" styleClass="reported-note" rendered="#{!coord.situation}" />
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </h:form>
+            </div>
+            <div class="text-center mt-0" style="margin-top: 1px;">
+                <h:outputText value="Gesamt : #{koordinatendatenbean.getListSize}" styleClass="user-name" style="font-size: 24px; font-weight: bold;" />
+            </div>
+            
+            <div class="text-center mt-4">
+                <h:link outcome="AdminControlPanel.xhtml" value="zurück zu AdminControlPanel" class="btn btn-primary" />
+            </div>
+
+        </div>
+    </h:body>
+</html>

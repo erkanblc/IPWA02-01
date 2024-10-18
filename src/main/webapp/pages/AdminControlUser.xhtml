@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <!-- Auf dieser Seite werden die Benutzer in einer Tabelle aufgelistet und verwaltet. 
+    Der Administrator kann Benutzerdaten anzeigen und löschen. Für die Auflistung 
+    der Benutzerdaten wird die JSF-Komponente dataTable verwendet. -->
+<h:head>
+    <!-- Seitentitel und Einfügen der CSS-Datei und Bootsrap-Datei-->
+    <title>Benutzer Kontroller</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <h:outputStylesheet name="css/admin/AdminControlUser.css" />
+</h:head>
+
+<h:body>
+    <div class="container d-flex align-items-center flex-column">
+        
+        <div class="d-flex align-items-center justify-content-center mb-4">
+            <div class="image-container">
+                <h:graphicImage name="images/users.gif" alt="Kullanıcılar" class="user-image" />
+            </div>
+
+            <!-- Title -->
+            <div class="title-container ml-3"> 
+                <h2 class="text-center">Benutzer Liste</h2>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <h:form>
+                <!-- Diese Seite funktioniert mit der Bean in UserDatenBean.java -->
+                <div class="table-responsive">
+                    <h:dataTable value="#{userdatenbean.userlist}" var="user" class="table table-bordered table-striped table-hover text-center">
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="ID" />
+                            </f:facet>
+                            <h:outputText value="#{user.id}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="BenutzerName" />
+                            </f:facet>
+                            <h:outputText value="#{user.username}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Vor-Nachname" />
+                            </f:facet>
+                            <h:outputText value="#{user.vornachname}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Kennwort" />
+                            </f:facet>
+                            <h:outputText value="#{user.password}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Kategori" />
+                            </f:facet>
+                            <h:outputText value="#{user.kundenkatagori}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Email" />
+                            </f:facet>
+                            <h:outputText value="#{user.email}" />
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Telefon" />
+                            </f:facet>
+                            <h:outputText value="#{user.telefon}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Erstellungsdatum" />
+                            </f:facet>
+                            <h:outputText value="#{user.createdAt}" />
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="" />
+                            </f:facet>
+                            <h:commandButton value="X" 
+                                             action="#{userdatenbean.delete(user)}"
+                                             onclick="return confirm('Möchten Sie es löschen?');" 
+                                             style="background-color: red; color: white;" />
+                        </h:column>
+                    </h:dataTable>
+                </div>
+            </h:form>
+            
+            <div class="text-center mt-4">
+                <h:link outcome="AdminControlPanel.xhtml" value="Zurück Admin Kontrolbereich" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</h:body>
+</html>

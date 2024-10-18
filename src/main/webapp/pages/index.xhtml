@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<h:head>
+    <!-- Seitentitel und Einfügen der CSS-Datei -->
+    <title>HomePage</title>
+    <h:outputStylesheet name="css/styles.css" />
+</h:head>
+
+<h:body>
+
+    <div class="container">
+        <div class="header">
+            <h:graphicImage name="images/radar.jpg" alt="Radar Resmi" />
+        </div>
+
+        <div class="center-content">
+            <h:form>
+                <!-- Link zur anonymen Meldung -->
+                <h:link value="Anonym Anmeldung" outcome="AnonymMeldung.xhtml" styleClass="button-link" target="_blank" />
+                <br/>
+                <br/>
+                <br/>
+                
+                <!-- Login-Link -->
+                <h:link value="Login" outcome="LoginApp.xhtml" styleClass="button-link" />
+            </h:form>
+        </div>
+    </div>
+
+</h:body>
+</html>
