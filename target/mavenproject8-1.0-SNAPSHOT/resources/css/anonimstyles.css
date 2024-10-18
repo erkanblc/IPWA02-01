@@ -1,0 +1,23 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+.footer{
+    width: 50%;
+    margin: 0 auto; /* Yatayda ortalama */
+    padding: 20px; /* İç boşluk ekleme */
+    text-align: center; /* İçerikleri ortalama */
+    border-radius: 10px; /* Köşeleri yuvarlama (isteğe bağlı) */
+}

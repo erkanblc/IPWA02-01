@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <!-- Diese Seite bietet eine JSF-basierte Schnittstelle und einen Kontrollbereich für die 
+    Anzeige und Aktualisierung der in der Datenbank gespeicherten Koordinatendaten. 
+    Die visuelle Darstellung der Koordinaten auf der Karte erfolgt über die Google Maps API,
+    und auf der linken Seite wird eine Liste der Koordinaten angezeigt. Der Benutzer kann die 
+    aus der linken Liste ausgewählten Koordinatendaten im Formular auf der rechten Seite 
+    aktualisieren oder löschen. Auch der Status der Koordinaten (z.B. Nicht Started ,
+    Started ,Geborgen ,Verschollen) kann mit den Buttons 
+    eingestellt werden. um das Formular auf der rechten Seite zu verwenden, müssen wir zuerst 
+    auf die ID in der linken Liste klicken. dann werden die Daten, die mit dieser ID verbunden 
+    sind, in unserer rechten Tabelle platziert. nachdem die notwendigen Änderungen vorgenommen 
+    wurden, müssen wir aktualisieren. andernfalls werden keine Einträge in der Datenbank vorgenommen. 
+    Die löschen Button löscht die Daten aus der Datenbank.
+    Sie enthält die Funktionen zum Hinzufügen von Markierungen auf der Karte 
+    mit der Show Marker Markierung anzeigen
+    gelbe Markierungen anonym 
+    rote Markierungen Benutzer -->
+    <h:head>
+        <!-- Seitentitel und Einfügen der CSS-Datei und Bootsrap-Datei-->
+        <title>Datenbank Kontrollerbereich</title>
+
+        <!-- Bootstrap CSS -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+
+        <!-- Custom CSS -->
+        <h:outputStylesheet name="css/admin/AdminControlLost.css" />
+
+        <!-- Google Maps API -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2sFHpm9AWY5okDNvt0Jj-bLxreSC_uvA"></script>
+
+        <script type="text/javascript">
+            var selectedLatLng;
+            var markers = [];
+            var userData = [];
+            var marker = null;
+            var map;
+            var sayac = 0;
+            function initMap() {
+                var defaultLocation = {lat: 39.9334, lng: 32.8597};
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: defaultLocation,
+                    zoom: 5
+                });
+            }
+
+            function MarkerAdd() {
+                var names = document.querySelectorAll(".user-name");
+                var lats = document.querySelectorAll(".user-lat");
+                var lngs = document.querySelectorAll(".user-lng");
+                var durums = document.querySelectorAll(".user-durum2");
+                for (var i = 0; i &lt; names.length; i++) {
+                    var name = names[i].textContent;
+                    var lat = parseFloat(lats[i].textContent);
+                    var lng = parseFloat(lngs[i].textContent);
+
+                    var durum = durums[i].checked;
+
+                    if (durum == false) {
+                        sayac++;
+                        var position3 = new google.maps.LatLng(lat, lng); // Koordinatlar
+                        var iconColor;
+                        if (name.trim() === "Anonim") {
+                            iconColor = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
+                        } else {
+                            iconColor = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+                        }
+                        var marker2 = new google.maps.Marker({
+                            position: position3,
+                            map: map,
+                            title: "Name: " + name,
+                            icon: iconColor
+                        });
+                        markers.push(marker2);
+                    }
+                }
+            }
+            
+             function resetLeftForm() {
+        document.getElementById('leftForm').reset();
+    }
+        </script>
+    </h:head>
+
+   <h:body onload="initMap(); jsf.ajax.request(this, event, {render: 'rightForm'})">
+
+        <div class="container">
+            <h2 class="text-center">Datenbank Kontrollerbereich</h2>
+
+            <!-- Google Maps -->
+            <div id="map"></div>
+            <div>
+                <h:form>
+                    <!-- Sie erlaubt es uns, die Punkte in unserer Liste auf der Karte anzuzeigen und verwendet die Funktion MarkersAdd() -->
+                    <h:commandButton value="Show Marker" type="button" onclick="MarkerAdd();" class="btn btn-primary"/>
+                </h:form></div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <h:form id="leftForm">
+                        <br/>
+                        <!-- linke Tabelle -->
+                        <h:dataTable value="#{koordinatendatenbean.kd_list}" var="coord" border="1" cellpadding="5" class="table table-bordered table-striped table-hover text-center">
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="ID" />
+                                </f:facet>
+                                <h:commandLink action="#{koordinatendatenbean.setKd_entity(coord)}" value="#{coord.id}">
+                                    <!--<f:ajax render="rightForm" />-->
+                                </h:commandLink>
+                            </h:column>
+                            
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size: 9px" value="X Koordinaten" />
+                                </f:facet>
+                                <h:outputText value="#{coord.kundenx}" styleClass="user-lat"/>
+                            </h:column>
+                            
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size: 9px" value="Y Koordinaten" />
+                                </f:facet>
+                                <h:outputText value="#{coord.kundeny}" styleClass="user-lng" />
+                            </h:column>
+                            
+                            <h:column styleClass="option-#{coord.optiondata}">
+                                <f:facet name="header">
+                                    <h:outputText value="Status" />
+                                </f:facet>
+                                <h:selectBooleanCheckbox value="#{coord.situation}" disabled="true" styleClass="user-durum2" />
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Bergungs person" />
+                                </f:facet>
+                                <h:outputText value="#{coord.bergungsperson}" styleClass="user-bergungsperson"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Anmeldungs datum" />
+                                </f:facet>
+                                <h:outputText value="#{coord.created_at}" />
+                            </h:column>
+                            
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="User" />
+                                </f:facet>
+                                <h:outputText value="#{coord.kundenkatagori}" />
+                            </h:column>
+                            
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="gemeldet" />
+                                </f:facet>
+                                <h:outputText value="#{coord.username}" styleClass="user-name"/>
+                            </h:column>
+                            
+                        </h:dataTable>
+                    </h:form>
+                </div>
+                
+                <!-- rechte Tabelle -->
+                <div class="col-md-4">
+                    <h2>Formular Info</h2>
+                    <h:form id="rightForm">
+                        <div class="form-group">
+                            <label for="form-id">ID</label>
+                            <input type="text" value="#{koordinatendatenbean.kd_entity.id}" id="form-id" class="form-control" readonly="readonly"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-kundenx">X Koordinaten</label>
+                            <input type="text" value="#{koordinatendatenbean.kd_entity.kundenx}" id="form-kundenx" class="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-kundeny">Y Koordinaten</label>
+                            <input type="text" value="#{koordinatendatenbean.kd_entity.kundeny}" id="form-kundeny" class="form-control"/>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="form-situation">Status</label>
+                            <h:selectBooleanCheckbox id="myCheckbox" value="#{koordinatendatenbean.kd_entity.situation}" />
+                        </div>
+                        
+                        <div class="form-group5" rendered="#{koordinatendatenbean.kd_entity.id != 0}">
+                            <label for="form-optiondata">Bergungsphase : </label>
+                            <input class="option-#{koordinatendatenbean.kd_entity.optiondata}"  
+                                   type="text" 
+                                   value="#{koordinatendatenbean.kd_entity.optiondata}" 
+                                   id="form-optiondata2"/>  
+                        </div> 
+                        
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example" style="font-size: 11px">
+                            
+                            <h:commandLink rendered="#{koordinatendatenbean.kd_entity.id != 0}" value="Nicht Started" action="#{koordinatendatenbean.kd_entity.setOptiondataTo1()}" styleClass="btn btn-secondary">
+                            </h:commandLink>
+
+                            <!-- 2. Buton - Açık Yeşil, Etiket: "Started" -->
+                            <h:commandLink rendered="#{koordinatendatenbean.kd_entity.id != 0}" value="Started" action="#{koordinatendatenbean.kd_entity.setOptiondataTo2()}" style="background-color: #90EE90; color: white;" styleClass="btn">
+                            
+                            </h:commandLink>
+                            
+                            <h:commandLink rendered="#{koordinatendatenbean.kd_entity.id != 0}" value="Geborgen" action="#{koordinatendatenbean.kd_entity.setOptiondataTo3()}" styleClass="btn btn-success">
+                            
+                            </h:commandLink>
+                            
+                            <h:commandLink rendered="#{koordinatendatenbean.kd_entity.id != 0}" value="Verschollen" action="#{koordinatendatenbean.kd_entity.setOptiondataTo4()}" styleClass="btn btn-danger">
+                            </h:commandLink>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="form-created_at">Anmeldungs datum :</label>
+                            <input type="text" value="#{koordinatendatenbean.kd_entity.created_at}" id="form-created_at" class="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-katagori">User Katagorie :</label>
+                            <input type="text" value="#{koordinatendatenbean.kd_entity.kundenkatagori}" id="form-katagori" class="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-username">Benutzername :</label>
+                            <input type="text" value="#{koordinatendatenbean.kd_entity.username}" id="form-username" class="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <h:commandButton value="Aktuelisieren" 
+                                             rendered="#{koordinatendatenbean.kd_entity.id != 0}" 
+                                             action="#{koordinatendatenbean.update}" 
+                                             class="btn btn-success">
+
+                            </h:commandButton>
+                            
+                            <h:commandButton value="Löschen" 
+                                             rendered="#{koordinatendatenbean.kd_entity.id != 0}" 
+                                             action="#{koordinatendatenbean.delete}" 
+                                             class="btn btn-danger">
+                            </h:commandButton>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+            <div class="col-md-12 mt-3">
+               
+            </div>
+            
+            <div class="text-center mt-4">
+                <h:link outcome="AdminControlPanel.xhtml" value="zurück Admin Kontrolbereich" class="btn btn-primary" />
+            </div>
+
+        </div>
+    </h:body>
+</html>
+

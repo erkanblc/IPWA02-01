@@ -1,0 +1,14 @@
+com\mycompany\mavenproject8\util\LogoutBean.class
+com\mycompany\mavenproject8\controller\AdminPages\UserDao.class
+com\mycompany\mavenproject8\util\DateTimeUtils.class
+com\mycompany\mavenproject8\util\DBConnector.class
+com\mycompany\mavenproject8\entity\UserDatabase.class
+com\mycompany\mavenproject8\filter\LoginFilter.class
+com\mycompany\mavenproject8\bean\UserDatenBean.class
+com\mycompany\mavenproject8\bean\AppLoginController.class
+com\mycompany\mavenproject8\JakartaRestConfiguration.class
+com\mycompany\mavenproject8\entity\KoordinatDaten.class
+com\mycompany\mavenproject8\entity\UserKoorDatabaseXY.class
+com\mycompany\mavenproject8\bean\KoordinatendatenBean.class
+com\mycompany\mavenproject8\entity\UserManager.class
+com\mycompany\mavenproject8\controller\AdminPages\AdminDao.class

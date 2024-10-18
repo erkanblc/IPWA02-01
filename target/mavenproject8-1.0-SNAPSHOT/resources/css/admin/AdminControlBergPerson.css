@@ -1,0 +1,85 @@
+#radar-image {
+    max-width: 25%; /* Resim genişliği ayarlanır */
+    margin-right: 5px; /* Resim ile yazı arasındaki boşluk */
+    margin-left: 45px;
+    border-bottom-left-radius: 25px;
+}
+
+#title {
+    text-align: center;
+    font-size: 2rem; /* Yazı boyutunu ayarlayabilirsiniz */
+    margin-left: 5px; /* Resim ile başlık arasındaki mesafe */
+}
+
+
+/* Tablo stilini iyileştirir */
+.table-container {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.table-bordered th, 
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Tabloda ortalama */
+.table td {
+                word-wrap: break-word;        /* Metnin hücrede sarmalanmasını sağlar */
+                white-space: normal;          /* Normal beyaz boşluk kullanımı */
+                max-width: 200px;             /* Hücre genişliği 200px ile sınırlı */
+                overflow: hidden;             /* Taşmayı gizler */
+            }
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+
+
+/* Geri dönüş butonu */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+#map {
+   height: 400px;
+   width: 100%;
+   margin-bottom: 20px;
+}
+.user-name, .user-kurtaran {
+    font-size: 10px;
+}
+
+.option-0 {
+    background-color: #ddd; /* Mavi */
+    color: white;
+}
+
+.option-1 {
+    background-color: #6C757D; /* Mavi */
+    color: white;
+}
+
+/* Option 2 - Sarı */
+.option-2 {
+    background-color: #90EE90; /* Sarı */
+    color: black;
+}
+
+/* Option 3 - Kırmızı */
+.option-3 {
+    background-color: #23933D; /* Kırmızı */
+    color: white;
+}
+
+/* Option 4 - Turuncu */
+.option-4 {
+    background-color: #C72737; /* Turuncu */
+    color: white;
+}

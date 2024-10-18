@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <!-- Diese Seite ist die Admin-Control-Seite. Von hier aus können Sie auf die Seiten
+    Berg Person, Benutzer Controls und Datenbank Controls zugreifen. Um auf diese Seite 
+    zugreifen zu können, muss user.katagori = 3 sein. -->
+<h:head>
+    <!-- Seitentitel und Einfügen der CSS-Datei und Bootsrap-Datei-->
+    <title>Admin Kontrolbereich</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <h:outputStylesheet name="css/admin/AdminControlPanel.css" />
+</h:head>
+
+<h:body>
+    <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
+        <div class="panel-box text-center">
+            
+            <h:graphicImage name="images/radargif.gif" alt="Radar" styleClass="radar-image" />
+
+            <!-- Butons -->
+            <div class="mt-3">
+                <h:link value="Berg Person" outcome="AdminControlBergPerson.xhtml" styleClass="btn btn-success btn-block" />
+                <h:link value="Benutzer Kontroller" outcome="AdminControlUser.xhtml" styleClass="btn btn-success btn-block" />
+                <h:link value="Datenbank Kontroller" outcome="AdminControlLost.xhtml" styleClass="btn btn-success btn-block" />
+            </div>
+        </div>
+    </div>
+    
+      <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <h:form>
+                <h:commandButton rendered="#{validUser != null}" action="/pages/LogoutApp?faces-redirect=true" value="Logout" class="btn btn-secondary"/>
+            </h:form>
+        </div>
+    </footer>
+</h:body>
+</html>

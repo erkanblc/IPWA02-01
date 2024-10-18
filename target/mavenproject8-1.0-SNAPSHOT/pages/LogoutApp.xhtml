@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+    <!-- 
+            Logout-Prozesse werden über LoginFilter.java gesteuert und Exits erfolgen
+    -->
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h1>Logout Page</h1>
+        <hr />
+        <h:form>
+            <h:commandButton action="/pages/LogoutApp?faces-redirect=true" value="Logout" />
+        </h:form>
+    </h:body>
+</html>

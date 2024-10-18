@@ -1,0 +1,34 @@
+/* Admin Paneli stil dosyası */
+
+body {
+    background-color: #f0f2f5;
+}
+
+.footer {
+    background-color: #f0f2f5;
+    width: 15%;
+    margin: 0 auto; /* Yatayda ortalama */
+    padding: 20px; /* İç boşluk ekleme */
+    text-align: center; /* İçerikleri ortalama */
+    border-radius: 10px; /* Köşeleri yuvarlama (isteğe bağlı) */
+}
+
+.panel-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 35%;
+}
+
+.radar-image {
+    width: 150px;
+    height: 150px;
+}
+
+
+.btn-block {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}

@@ -1,0 +1,36 @@
+
+#map {
+   height: 400px;
+   width: 100%;
+   margin-bottom: 20px;
+}
+.user-name, .user-kurtaran {
+    font-size: 10px;
+}
+.option-0 {
+    background-color: #ddd; /* Mavi */
+    color: white;
+}
+
+.option-1 {
+    background-color: #6C757D; /* Mavi */
+    color: white;
+}
+
+/* Option 2 - Sarı */
+.option-2 {
+    background-color: #90EE90; /* Sarı */
+    color: black;
+}
+
+/* Option 3 - Kırmızı */
+.option-3 {
+    background-color: #23933D; /* Kırmızı */
+    color: white;
+}
+
+/* Option 4 - Turuncu */
+.option-4 {
+    background-color: #C72737; /* Turuncu */
+    color: white;
+}

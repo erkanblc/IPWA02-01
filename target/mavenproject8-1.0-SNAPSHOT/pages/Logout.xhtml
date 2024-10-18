@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <!-- 
+            Logout-Prozesse werden über LoginFilter.java gesteuert und Exits erfolgen
+            Logout yapiyor 
+            auf dieser Seite löschen wir die Session Daten
+        -->
+        
+        <title>LogOut</title>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:viewAction action="#{logoutyap.logout()}" />
+        </f:metadata>
+
+        <!-- user message -->
+        <h1>Session gelöscht...</h1>
+
+        
+        <h:form>
+            <h:outputLink value="../index.html">
+                Ana Sayfaya Dön
+            </h:outputLink>
+        </h:form>
+    </h:body>
+</html>
